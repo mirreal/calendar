@@ -1,0 +1,92 @@
+* {padding:0;margin:0;font-size:24px;}
+
+body {
+	color: #333;
+	background: #f3f3f3;
+}
+
+.page {
+	width: 640px;
+	margin: 0 auto;
+}
+
+.data_box {
+	width: 600px;
+	margin: 0 auto;
+}
+
+.showDate {
+	width:248px;
+	height:30px;
+	line-height:30px;
+	padding:0 5px;
+	color:#999;
+	display:block;
+	cursor:pointer
+}
+
+.show_mn {
+	text-align:center;
+	padding:0 20px;
+}
+
+.sel_date {
+	margin-top:10px;
+	border:1px solid #999;
+	padding:3px
+}
+
+.data_table {
+	width:100%;
+	margin-top:10px;
+}
+
+.data_table tbody {
+	border: 1px solid #cbcbcb;
+}
+
+.data_table thead td {
+	text-align:center;
+	height:48px;
+	font-size:28px;
+	color: #fff;
+	background: DeepSkyBlue;
+	border: 1px solid #e3e3e3;
+}
+
+.data_table tbody td {
+	text-align:center;
+	cursor:pointer;
+	width: 80px;
+	height:100px;
+	font-size:28px;
+	.color: #333;
+	border: 1px solid #e3e3e3;
+}
+
+.data_table td.active {
+	color:#fff;
+	background-color:orange;
+}
+
+.oldDate {
+	color: #ccc;;
+	background: #e3e3e3;
+	border: 1px solid #e3e3e3;
+}
+
+.availableDate {
+	color: #FFFFFF;
+	background: orange;
+}
+
+.showDate2 {
+	padding:3px 5px;
+	color:orange;
+	font-size: 36px;
+	text-align:center
+}
+
+.showDate2.active {
+	border:1px solid #c50000;
+}
