@@ -34,9 +34,13 @@ function App(count) {
 	this.endTime = 0;
 	this.startBox = null;
 	this.endBox = null;
+
+	this.startDate = null;
+	this.startDate = null;
 	
 	this.activeTd = null;
-	this.dateText = document.getElementsByClassName("showDate")[0];
+	this.startDateBox = document.getElementsByClassName("startDate")[0];
+	this.endDateBox = document.getElementsByClassName("endDate")[0];
 
 	this.init();
 	this.addEventHandle();
@@ -50,6 +54,9 @@ App.prototype.init = function() {
 		month = newDay.getMonth(),
 		date = newDay.getDate();
 
+	this.startDate = new MyDate(year, month+1, date);
+	this.endDate = this.startDate.buildNextDate();
+	console.log(this.endDate.toString())
 	this.calendars[0] = new Calendar({id: 1, year: year, month: month, date: date});
 	
 	for (var i = 1; i < this.count; i++) {
@@ -58,6 +65,47 @@ App.prototype.init = function() {
 
 	this.getAllDateTd();
 	this.getAvailableDateTd();
+	this.render();
+};
+
+App.prototype.render = function() {
+	if (!this.startDate || !this.endDate) return;
+
+	var startDateText = this.startDate.toString();
+	var endDateText = this.endDate.toString();
+	for (var i = 0, len = this.availableTd.length; i < len; i++) {
+		if (startDateText === this.availableTd[i].getAttribute('data-date')) {
+			this.availableTd[i].innerHTML = 'in';
+		}
+		if (endDateText === this.availableTd[i].getAttribute('data-date')) {
+			this.availableTd[i].innerHTML = 'out';
+		}
+		var thisDate = new MyDate();
+		thisDate.getDateFromElement(this.availableTd[i]);
+
+		if (thisDate.isAfter(this.startDate) && this.endDate.isAfter(thisDate)) {
+			exile.addClass(this.availableTd[i], 'availableDate');
+		}
+	}
+	this.endDateBox.innerHTML = endDateText;
+	this.startDateBox.innerHTML = startDateText;
+};
+
+App.prototype.removeNode = function() {
+	var tbody = document.getElementByTagName('tbody');
+	var trs = [];
+	for (var i = 0, m = tbody.length; i < m; i++) {
+		var tr = tbody[i].getElementByTagName('tr');
+		for (var j = 0, n = tr.length; j < n; j++) {
+			trs.push(tr);
+		}
+	}
+
+	for (var k = 0; k < trs.length; k++) {
+		var tds = trs[k].getElementByTagName('td');
+		if (tds[0]);
+		tds[0].parentNode.removeNode
+	}
 };
 
 App.prototype.getAllDateTd = function() {
@@ -95,14 +143,16 @@ App.prototype.getDateFromDataRole = function(element) {
 
 App.prototype.returnInitState = function() {
 	var self = this;
-
+	/*
 	if (self.startBox !== null) {
 		self.startBox.innerHTML = self.getDateFromDataRole(self.startBox);
 	}
 	if (self.endBox !== null) {
 		self.endBox.innerHTML = self.getDateFromDataRole(self.endBox);
 	}
+	*/
 	for (var i = 0, len = self.availableTd.length; i < len; i++) {
+		self.availableTd[i].innerHTML = self.getDateFromDataRole(self.availableTd[i]);
 		if (exile.hasClass(self.availableTd[i], 'availableDate')) {
 			exile.removeClass(self.availableTd[i], 'availableDate');
 		}
@@ -116,17 +166,15 @@ App.prototype.addEventHandle = function() {
 			console.log(this)
 			var year = this.getAttribute('data-date').substr(0, 4);
 			var month = this.getAttribute('data-date').substr(5, 2);
-			var day = this.getAttribute('data-date').substr(8, 2);
+			var date = this.getAttribute('data-date').substr(8, 2);
 
-			self.dateText.innerHTML = this.getAttribute('data-date');
-
-			exile.addClass(event.target, ' active');
+			exile.addClass(event.target, 'active');
 			if (self.activeTd !== null) exile.removeClass(self.activeTd, 'active');
 			self.activeTd = this;
 
 
 			var newDate = new Date();
-			newDate.setFullYear(year, month, day);
+			newDate.setFullYear(year, month, date);
 			var mill = newDate.getTime();
 
 			if (self.startBox === null || (self.startBox !== null && self.endBox !== null)) {
@@ -134,11 +182,16 @@ App.prototype.addEventHandle = function() {
 				
 				self.endBox = null;
 				self.startBox = this;
+				//self.startDate = new MyDate(year, month, date);
+				//self.endDate = self.startDate.buildNextDate();
+				//self.render()
+				self.startDateBox.innerHTML = this.getAttribute('data-date');
 				self.startTime = mill;
 				this.innerHTML = 'in';
 			} else {
-				if (mill > self.startTime) {
+				if (mill > self.startTime && this !== self.startBox) {
 					self.endBox = this;
+					self.endDateBox.innerHTML = this.getAttribute('data-date');
 					self.endTime = mill;
 					this.innerHTML = 'out';
 					
@@ -147,6 +200,7 @@ App.prototype.addEventHandle = function() {
 					self.returnInitState();
 					self.endBox = null;
 					self.startBox = this;
+					self.startDateBox.innerHTML = this.getAttribute('data-date');
 					self.startTime = mill;
 					this.innerHTML = 'in';
 				}
@@ -230,13 +284,28 @@ Calendar.prototype.init = function() {
 	this.td = tbody.getElementsByTagName("td");
 
 	for (var i = 0; i < 42; i++) {
-
 		if (i+1 < this.date) {
 			this.td[i + this.firstDay].className = 'oldDate';
 		}
 	}
 
 	this.render();
+	this.removeValiedTr();
+};
+
+Calendar.prototype.removeValiedTr = function() {
+	var tbody = this.calendarBox.getElementsByTagName('tbody')[0];
+	var tr = tbody.getElementsByTagName('tr');
+	var removeTr = [];
+	for (var i = 4; i < 6; i++) {
+		var td = tr[i].getElementsByTagName('td');
+		if (td[0].innerHTML === '') {
+			removeTr.push(tr[i]);
+		}
+	}
+	removeTr.forEach(function(tr) {
+		tr.parentNode.removeChild(tr);
+	});
 };
 
 Calendar.prototype.buildNextMonth = function() {
@@ -296,7 +365,7 @@ Calendar.prototype.renderDate = function () {
 			//tdBox.className += ' active';
 			tdBox.innerHTML = 'Today';
 		}
-	} 
+	}
 };
 
 
@@ -310,11 +379,43 @@ function MyDate(year, month, date) {
 	this.init();
 }
 
+MyDate.prototype.toString = function() {
+	var month = (this.month < 10) ? ('0' + (this.month)) : this.month;
+	var date = (this.date < 10) ? ('0' + (this.date)) : this.date;
+	return this.year + '-' + month + '-' + date;
+};
+
 MyDate.prototype.init = function() {
 	var newDate = new Date();
 	newDate.setFullYear(this.year, this.month-1, this.date);
 	this.millisecond = newDate.getTime();
 	//console.log(this.millisecond)
+	this.getMonthArray();
+};
+
+MyDate.prototype.getMonthArray = function() {
+	var year = this.year;
+	var months = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+	if (year % 4 === 0) {
+		months[1] = 29;
+		if (year % 100 === 0 && year % 400 !== 0) months[1] = 28; 
+	}
+	this.months = months;
+};
+
+MyDate.prototype.buildNextDate = function() {
+	var year = parseInt(this.year);
+	var month = parseInt(this.month);
+	var date = parseInt(this.date) + 1;
+	if (date > this.months[month-1]) {
+		date = 1;
+		month += 1;
+		if (month > 12) {
+			month = 1;
+			year += 1;
+		}
+	}
+	return new MyDate(year, month, date);
 };
 
 MyDate.prototype.getDateFromElement = function(element) {
@@ -331,7 +432,7 @@ MyDate.prototype.isAfter = function(otherDate) {
 	var newDate = new Date();
 	newDate.setFullYear(otherDate.year, otherDate.month-1, otherDate.date);
 
-	if (this.millisecond >= newDate.getTime()) return true;
+	if (this.millisecond + 24*60*60*1000 > newDate.getTime()) return true;
 	return false;
 	
 	/* old Version

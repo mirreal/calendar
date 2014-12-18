@@ -58,15 +58,15 @@ body {
 	text-align:center;
 	cursor:pointer;
 	width: 80px;
-	height:100px;
-	font-size:28px;
+	height:70px;
+	font-size:24px;
 	.color: #333;
 	border: 1px solid #e3e3e3;
 }
 
 .data_table td.active {
-	color:#fff;
-	background-color:orange;
+	color: #fff;
+	background-color: #25a4bb;
 }
 
 .oldDate {
@@ -77,7 +77,7 @@ body {
 
 .availableDate {
 	color: #FFFFFF;
-	background: orange;
+	background: #25a4bb;
 }
 
 .showDate2 {
