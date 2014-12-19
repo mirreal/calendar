@@ -34,12 +34,6 @@ function App(count) {
 	this.startDate = null;
 	this.startDate = null;
 
-	this.startBox = null;
-	this.endBox = null;
-	this.activeBox = null;
-	this.startDateBox = document.getElementsByClassName("startDate")[0];
-	this.endDateBox = document.getElementsByClassName("endDate")[0];
-
 	this.init();
 }
 
@@ -94,10 +88,9 @@ App.prototype.getAvailableDateTd = function() {
 */
 
 App.prototype.render = function() {
-	if (!this.startDate || !this.endDate) return;
+	if (this.startDate) var startDateText = this.startDate.toString();
+	if (this.endDate) var endDateText = this.endDate.toString();
 
-	var startDateText = this.startDate.toString();
-	var endDateText = this.endDate.toString();
 	for (var i = 0, len = this.availableTd.length; i < len; i++) {
 		if (startDateText === this.availableTd[i].getAttribute('data-date')) {
 			this.availableTd[i].innerHTML += '<p>\u5165\u4f4f</p>';
@@ -107,104 +100,19 @@ App.prototype.render = function() {
 		}
 		var thisDate = new MyDate();
 		thisDate.updateDateFromElement(this.availableTd[i]);
-
-		if (thisDate.isAfter(this.startDate) && this.endDate.isAfter(thisDate)) {
-			exile.addClass(this.availableTd[i], 'availableDate');
-		}
 	}
 
-	this.endDateBox.innerHTML = endDateText;
-	this.startDateBox.innerHTML = startDateText;
+	var startDateBox = document.getElementsByClassName("startDate")[0];
+	var endDateBox = document.getElementsByClassName("endDate")[0];
+	endDateBox.innerHTML = endDateText;
+	startDateBox.innerHTML = startDateText;
+
+	this.renderChooseDate();
 };
 
+App.prototype.renderChooseDate = function() {
+	if (!this.startDate || !this.endDate) return;
 
-App.prototype.set = function(option) {
-	if (!option) return;
-};
-App.prototype.chooseInAndOutDate = function(that, mill) {
-	var self = this;
-};
-
-
-App.prototype.getDateFromDataRole = function(element) {
-	return parseInt(element.getAttribute('data-date').substr(8, 2));
-};
-
-App.prototype.returnInitState = function() {
-	var self = this;
-	/*
-	if (self.startBox !== null) {
-		self.startBox.innerHTML = self.getDateFromDataRole(self.startBox);
-	}
-	if (self.endBox !== null) {
-		self.endBox.innerHTML = self.getDateFromDataRole(self.endBox);
-	}
-	*/
-
-	for (var i = 0, len = self.availableTd.length; i < len; i++) {
-		self.availableTd[i].innerHTML = self.getDateFromDataRole(self.availableTd[i]);
-		if (exile.hasClass(self.availableTd[i], 'availableDate')) {
-			exile.removeClass(self.availableTd[i], 'availableDate');
-		}
-		/*
-		if (exile.hasClass(self.availableTd[i], 'active')) {
-			exile.removeClass(self.availableTd[i], 'active');
-		}
-		*/
-	}
-};
-
-App.prototype.addEventHandle = function() {
-	var self = this;
-
-	for (var i = 0, len = this.availableTd.length; i < len; i++) {
-		this.availableTd[i].addEventListener('click', function(event) {
-			console.log(this)
-
-			exile.addClass(event.target, 'active');
-			if (self.activeBox !== null && self.activeBox !== this) {
-				exile.removeClass(self.activeBox, 'active');
-			}
-			self.activeBox = this;
-			var newDate = new MyDate();
-			newDate.updateDateFromElement(this);
-
-			if (self.startDate === null || (self.startDate !== null && self.endDate !== null)) {
-				self.returnInitState();
-				self.endBox = null;
-				self.endDate = null;
-
-				self.startBox = this;
-				self.startDate = newDate;
-				//self.endDate = self.startDate.buildNextDate();
-				self.render();
-				self.startDateBox.innerHTML = this.getAttribute('data-date');
-				this.innerHTML += '<p>\u5165\u4f4f</p>';
-			} else {
-				if (newDate.isAfter(self.startDate) && !newDate.equal(self.startDate)) {
-					self.endBox = this;
-					self.endDate = newDate;
-					self.endDateBox.innerHTML = this.getAttribute('data-date');
-					this.innerHTML += '<p>\u79bb\u5e97</p>';
-					
-					self.renderAvailableDate.call(self);
-				} else {
-					self.returnInitState();
-					self.endBox = null;
-					self.endDate = null;
-					self.startBox = this;
-					self.startDate = newDate;
-
-					self.render();
-					self.startDateBox.innerHTML = this.getAttribute('data-date');
-					this.innerHTML += '<p>\u5165\u4f4f</p>';
-				}
-			}
-		});
-	}
-};
-
-App.prototype.renderAvailableDate = function() {
 	var self = this;
 
 	this.availableTd.forEach(function(td) {
@@ -216,6 +124,65 @@ App.prototype.renderAvailableDate = function() {
 		}
 	})
 };
+
+App.prototype.getDateFromDataRole = function(element) {
+	return parseInt(element.getAttribute('data-date').substr(8, 2));
+};
+
+App.prototype.returnInitState = function() {
+	var self = this;
+
+	for (var i = 0, len = self.availableTd.length; i < len; i++) {
+		self.availableTd[i].innerHTML = self.getDateFromDataRole(self.availableTd[i]);
+		if (exile.hasClass(self.availableTd[i], 'availableDate')) {
+			exile.removeClass(self.availableTd[i], 'availableDate');
+		}
+
+		if (exile.hasClass(self.availableTd[i], 'active')) {
+			exile.removeClass(self.availableTd[i], 'active');
+		}
+	}
+};
+
+App.prototype.addEventHandle = function() {
+	var self = this;
+
+	for (var i = 0, len = this.availableTd.length; i < len; i++) {
+		this.availableTd[i].addEventListener('click', function(event) {
+			console.log(this)
+			self.returnInitState();
+			exile.addClass(this, 'active');
+			self.checkInAndOut(this);
+			self.render();
+		});
+	}
+};
+
+App.prototype.checkInAndOut = function(element) {
+	var self = this;
+
+	//exile.addClass(element, 'active');
+	var newDate = new MyDate();
+	newDate.updateDateFromElement(element);
+
+	if (self.startDate === null || (self.startDate !== null && self.endDate !== null)) {
+		self.endDate = null;
+		self.startDate = newDate;
+	} else {
+		if (newDate.isAfter(self.startDate) && !newDate.equal(self.startDate)) {
+			self.endDate = newDate;
+		} else {
+			self.endDate = null;
+			self.startDate = newDate;
+		}
+	}
+};
+
+App.prototype.set = function(option) {
+	if (!option) return;
+};
+
+
 
 function Calendar(option) {
 	if (!option) return;
@@ -247,10 +214,10 @@ Calendar.prototype.createDOMTree = function(className) {
 Calendar.prototype.createTemplate = function() {
 	var topBox = '<div class="clearfix">' +
 							'<div class="show_mn">' +
-		          	'<span class="showDate2 year">选择年份</span>' +
-		            '<span class="ml5 mr5">年</span>' +
-		            '<span class="showDate2 month">选择月份</span>' +
-		            '<span class="ml5">月</span>' +
+		          	'<span class="showDate2 year">\u9009\u62e9\u5e74\u4efd</span>' +
+		            '<span class="ml5 mr5">\u5e74</span>' +
+		            '<span class="showDate2 month">\u9009\u62e9\u6708\u4efd</span>' +
+		            '<span class="ml5">\u6708</span>' +
 		        	'</div>' +
 		        '</div>';
 	var tr = '<tr>' +
@@ -259,7 +226,8 @@ Calendar.prototype.createTemplate = function() {
 	var tbody = '<tbody>' + tr+tr+tr+tr+tr+tr + '</tbody>';
 	var thead = '<thead>' +
 		          	'<tr>' +
-		            	'<td>日</td><td>一</td><td>二</td><td>三</td><td>四</td><td>五</td><td>六</td>' +
+		            	'<td>\u65e5</td><td>\u4e00</td><td>\u4e8c</td>' +
+		            	'<td>\u4e09</td><td>\u56db</td><td>\u4e94</td><td>\u516d</td>' +
 		         	'</tr>' +
 		      	'</thead>';
 	var dateTable = '<table class="data_table">' + thead + tbody + '</table>';
@@ -319,7 +287,7 @@ Calendar.prototype.renderDateBox = function () {
 
 		if (j+1 === this.date && !exile.hasClass(tdBox, 'active')) {
 			//tdBox.className += ' active';
-			tdBox.innerHTML = '今天';
+			tdBox.innerHTML = '\u4eca\u5929';
 		}
 	}
 };
@@ -373,8 +341,10 @@ function MyDate(year, month, date) {
 }
 
 MyDate.prototype.toString = function() {
-	var month = (this.month < 10) ? ('0' + (this.month)) : this.month;
-	var date = (this.date < 10) ? ('0' + (this.date)) : this.date;
+	var month = parseInt(this.month);
+	var date = parseInt(this.date);
+	month = (month < 10) ? ('0' + (month)) : month;
+	date = (date < 10) ? ('0' + (date)) : date;
 	return this.year + '-' + month + '-' + date;
 };
 
