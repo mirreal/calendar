@@ -1,4 +1,4 @@
-* {padding:0;margin:0;font-size:24px;}
+* {padding:0px;margin:0px;font-size:24px;}
 
 body {
 	color: #333;
@@ -10,8 +10,22 @@ body {
 	margin: 0 auto;
 }
 
+.page header {
+	position: fixed;
+	top: 0px;
+	width: 640px;
+	height: 60px;
+	background: orange;
+}
+
+.page header .startDate, .page header .endDate {
+	display: inline-block;
+	width: 300px;
+	text-align: center;
+}
+
 .data_box {
-	width: 600px;
+	width: 626px;
 	margin: 0 auto;
 }
 
@@ -50,7 +64,7 @@ body {
 	height:48px;
 	font-size:28px;
 	color: #fff;
-	background: DeepSkyBlue;
+	background: #25a4bb;
 	border: 1px solid #e3e3e3;
 }
 
@@ -58,10 +72,13 @@ body {
 	text-align:center;
 	cursor:pointer;
 	width: 80px;
-	height:70px;
-	font-size:24px;
-	.color: #333;
-	border: 1px solid #e3e3e3;
+	height: 80px;
+	color: #615858;
+	border: 2px solid #e3e3e3;
+}
+
+.data_table tbody td p {
+	font-size: 22px;
 }
 
 .data_table td.active {
@@ -69,13 +86,13 @@ body {
 	background-color: #25a4bb;
 }
 
-.oldDate {
+.data_table tbody td.oldDate {
 	color: #ccc;;
 	background: #e3e3e3;
 	border: 1px solid #e3e3e3;
 }
 
-.availableDate {
+.data_table tbody td.availableDate {
 	color: #FFFFFF;
 	background: #25a4bb;
 }
