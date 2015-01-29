@@ -8,7 +8,7 @@
 		<meta name="apple-mobile-web-app-status-bar-style" content="black">
 		<meta http-equiv="Expires" content="-1">
 		<meta http-equiv="pragram" content="no-cache">
-		<title></title>
+		<title>Calendar</title>
 		<link rel="stylesheet" href="cal2.css">
 		<script type="text/javascript">
 			var phoneWidth =  parseInt(window.screen.width);
@@ -27,21 +27,75 @@
 			} else {
 				document.write('<meta name="viewport" content="width=640, user-scalable=no, target-densitydpi=device-dpi">');
 			}
-			//微信去掉下方刷新栏
+			// 微信去掉下方刷新栏
 			if(RegExp("MicroMessenger").test(navigator.userAgent)){
 				document.addEventListener('WeixinJSBridgeReady', function onBridgeReady() {
 						WeixinJSBridge.call('hideToolbar');
 				});
 			}
 		</script>
-</head>
-<body>
-	<div class="page">
-		<header>
-			<div class="startDate">Start</div>
-			<div class="endDate" >End</div>
-		</header>
-	</div>
-	<script src="cal2.js"></script>
-</body>
+	</head>
+	<body>
+		<div class="dateBox">If you see me, please click me.</div>
+
+		<div class="page">
+			<div class="calendar-ctrl">
+				<ul>
+					<li class="cancel-btn">取消<b></b></li>
+					<li class="date-info"></li>
+					<li class="confirm-btn">确定<b></b></li>
+				</ul>
+			</div>
+			<div class="calendar"></div>
+		</div>
+		<script src="cal2.js"></script>
+		<script>
+		(function() {
+			var newDay = new Date();
+			var year = newDay.getFullYear(),
+				month = newDay.getMonth(),
+				date = newDay.getDate();
+			var startDate = new MyDate(year, month+1, date);
+			var endDate = startDate.buildNextDate();
+
+			var confirmAnimation = function() {
+				var page = document.querySelector('.page');
+				var dateBox = document.querySelector('.dateBox');
+				_.removeClass(page, 'upAnimation');
+				_.addClass(page, 'downAnimation');
+
+				var startDateText = this.startDate.toString();
+				var endDateText = this.endDate.toString();
+				dateBox.innerHTML = '<p>' + startDateText + '(入住)</p><p>' + endDateText + '(离店)</p>';
+				setTimeout(function() {
+					_.hide(page);
+				}, 600);
+			};
+
+			var data = {'default': 256, '2015-01-31': 378, '2015-02-24': 745};
+			var mCal = new App();
+
+			mCal.on('confirm', function() {
+				console.log(this.get('startDate'));
+				confirmAnimation.call(this);
+			});
+			mCal.on('confirm', function() {
+				console.log(this.get('endDate').toString());
+			});
+			mCal.on('cancel', function() {
+				console.log(this.get('endDate').toString());
+				confirmAnimation.call(this);
+		    });
+		    mCal.on('dateBox', function() {
+		    	//console.log('none');
+		    });
+			mCal.set('startDate', startDate)
+				.set('endDate', endDate)
+				.set('maxDate', 100);
+			mCal.set('count', 6).init();
+
+			mCal.renderPrice(data);
+		})();
+		</script>
+	</body>
 </html>

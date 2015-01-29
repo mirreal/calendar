@@ -1,31 +1,104 @@
-* {padding:0px;margin:0px;font-size:24px;}
+* {padding:0px;margin:0px;border:none;}
 
 body {
 	color: #333;
 	background: #f3f3f3;
+	font-size: 24px;
 }
 
 .page {
+	position: absolute;
+	top: 0;
+	left: 50%;
 	width: 640px;
-	margin: 0 auto;
+	/* margin: 0 auto; */
+	margin-left: -320px;
+	background: #f3f3f3;
 }
 
-.page header {
+.downAnimation {
+	opacity: 0;
+	-webkit-transform: translateY(480px);
+	transform: translateY(480px);
+	-webkit-transition: all 0.6s ease-in-out;
+	transition: all 0.6s ease-in-out;
+}
+.upAnimation {
+	opacity: 1;
+	-webkit-transition: all 0.4s ease-in-out;
+	transition: all 0.4s ease-in-out;
+}
+
+.calendar-ctrl {
 	position: fixed;
 	top: 0px;
-	width: 640px;
-	height: 60px;
-	background: orange;
+	color: #4b89dc;
+	background: #F5F5F9;
+	font-size: 32px;
+	height: 80px;
+	text-align: center;
+	border-bottom: 4px solid #4b89dc;
 }
 
-.page header .startDate, .page header .endDate {
-	display: inline-block;
-	width: 300px;
+.calendar-ctrl li b {
+	position: absolute;
+	top: 50%;
+	left: 100%;
+	margin-top: -20px;
+	height: 40px;
+	border-right: 1px solid #CACBCF;
+}
+
+.calendar-ctrl .confirm-btn b {
+	right: 100%;
+	left: auto;
+}
+
+.page ul {
+	width: 640px;
+	height: 60px;
+	display: -webkit-box;
+	list-style: none;
+}
+
+.page ul li {
+	position: relative;
+	padding-top: 20px;
+	padding-bottom: 20px;
+	-webkit-box-flex: 1;
+	font-size: 32px;
+}
+
+.page ul .cancel-btn {
+	width: 21%;
+}
+
+.page ul .confirm-btn {
+	width: 21%;
+}
+
+.page ul .date-info {
+	color: #615858;
+	width: 58%;
+}
+
+.page ul .date-info {
 	text-align: center;
+	font-size: 28px;
+}
+
+.page ul .date-info strong {
+	font-size: 30px;
+	color: orange;
+}
+
+.page .calendar {
+	margin-top: 80px;
 }
 
 .data_box {
 	width: 626px;
+	width: 640px;
 	margin: 0 auto;
 }
 
@@ -45,9 +118,10 @@ body {
 }
 
 .sel_date {
-	margin-top:10px;
-	border:1px solid #999;
-	padding:3px
+	margin-top: 10px;
+	border: 1px solid #999;
+	border: none;
+	padding-top: 3px
 }
 
 .data_table {
@@ -55,6 +129,18 @@ body {
 	margin-top:10px;
 }
 
+.clearfix {
+	height: 60px;
+}
+
+.show_mn {
+	padding: 10px 0;
+}
+
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
+}
 .data_table tbody {
 	border: 1px solid #cbcbcb;
 }
@@ -64,44 +150,67 @@ body {
 	height:48px;
 	font-size:28px;
 	color: #fff;
-	background: #25a4bb;
-	border: 1px solid #e3e3e3;
+	/*background: #25a4bb;*/
+	background: #4b89dc;
+	border: 2px solid #e3e3e3;
 }
 
 .data_table tbody td {
-	text-align:center;
 	cursor:pointer;
 	width: 80px;
-	height: 80px;
+	height: 100px;
+	text-align:center;
+	font-weight: 600;
+	font-size: 32px;
 	color: #615858;
+	/*background: #FAFAFA;*/
+	background: #fff;
 	border: 2px solid #e3e3e3;
 }
 
 .data_table tbody td p {
 	font-size: 22px;
+	font-weight: 500;
+	color: #999;
+}
+
+.data_table tbody td.active p {
+	color: #fff;
+}
+
+.data_table tbody td.availableDate p {
+	color: #FFF;
+}
+
+.data_table td.weekend {
+	color: #ff5b45;
 }
 
 .data_table td.active {
 	color: #fff;
-	background-color: #25a4bb;
+	background: #4b89dc;
+}
+
+.data_table tbody td.null {
+	background: #e3e3e3;
 }
 
 .data_table tbody td.oldDate {
 	color: #ccc;;
-	background: #e3e3e3;
-	border: 1px solid #e3e3e3;
+	background: #f3f3f3;
+	border: 2px solid #e3e3e3;
 }
 
 .data_table tbody td.availableDate {
 	color: #FFFFFF;
-	background: #25a4bb;
+	background: #4b89dc;
 }
 
 .showDate2 {
-	padding:3px 5px;
-	color:orange;
+	padding: 3px 5px;
+	color: #4b89dc;
 	font-size: 36px;
-	text-align:center
+	text-align: center
 }
 
 .showDate2.active {
