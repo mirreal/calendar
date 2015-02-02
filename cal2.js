@@ -41,6 +41,7 @@ function App(count) {
   this.count = count || 1;
 
   this.availableTd = [];
+  this.chooseTd = [];
 
   this.calendars = [];
   this.events = [];
@@ -152,10 +153,12 @@ App.prototype.render = function() {
     if (startDateText === this.availableTd[i].getAttribute('data-date')) {
       //this.availableTd[i].innerHTML = parseInt(this.startDate.date) + '<p>\u5165\u4f4f</p>';
       this.availableTd[i].innerHTML = '\u5165\u4f4f' + '<p>￥' + price + '</p>';
+      if (!price) this.availableTd[i].innerHTML = '\u5165\u4f4f';
     }
     if (endDateText === this.availableTd[i].getAttribute('data-date')) {
       //this.availableTd[i].innerHTML = parseInt(this.endDate.date) + '<p>\u79bb\u5e97</p>';
       this.availableTd[i].innerHTML = '\u79bb\u5e97' + '<p>￥' + price + '</p>';
+      if (!price) this.availableTd[i].innerHTML = '\u79bb\u5e97';
     }
     // weekend css
     var thisDate = new MyDate();
@@ -181,33 +184,62 @@ App.prototype.renderChooseDate = function() {
   if (!this.startDate || !this.endDate) return;
 
   var self = this;
+  this.chooseTd = [];
 
   this.availableTd.forEach(function(td) {
     var newDate = new MyDate();
     newDate.updateDateFromElement(td);
 
     if (newDate.isAfter(self.startDate) && self.endDate.isAfter(newDate)) {
+      self.chooseTd.push(td);
       _.addClass(td, 'availableDate');
     }
   })
 };
 
-// format 1: {'default': 256, '2015-01-31': 378, '2015-02-24': 745};
+// price data format 1: {'default': 256, '2015-01-31': 378, '2015-02-24': 745};
 App.prototype.renderPrice = function(data) {
-  if (this.isLoaded) return;
   var self = this;
 
-  this.isLoaded = !0;
   var dateString = '';
   var price = 0;
 
   this.availableTd.forEach(function(td) {
     price = data['default'];
     dateString = td.getAttribute('data-date');
-    if (data[dateString]) price = data[dateString];
+    if (data[dateString] !== undefined) price = data[dateString];
     td.innerHTML = self.getDateFromDataRole(td) + '<p>￥' + price + '</p>';
     _.attr(td, 'data-price', price);
   });
+};
+
+// price data format 2: array from today [123, 234, 345, 456, 567, 678, 789, 890, 012]
+App.prototype.renderPrice1 = function(data) {
+  var self = this;
+
+  var price = 0;
+
+  this.availableTd.forEach(function(td, index) {
+    price = parseInt(data[index]);
+    if (!price) {
+      td.innerHTML = self.getDateFromDataRole(td);
+    } else {
+      td.innerHTML = self.getDateFromDataRole(td) + '<p>￥' + price + '</p>';
+      _.attr(td, 'data-price', price);
+    }
+  });
+};
+
+App.prototype.countTotalPrice = function() {
+  var self = this;
+
+  var totalPrice = 0;
+
+  for (var i = 0, len = this.chooseTd.length; i < len - 1; i++) {
+    totalPrice += _.attr(this.chooseTd[i], 'data-price') * 1;
+  }
+
+  return totalPrice;
 };
 
 App.prototype.getDateFromDataRole = function(element) {
@@ -224,6 +256,8 @@ App.prototype.returnInitState = function() {
     price = self.availableTd[i].getAttribute('data-price');
     self.availableTd[i].innerHTML = self.getDateFromDataRole(self.availableTd[i]) +
         '<p>￥' + price + '</p>';
+    if (!price) self.availableTd[i].innerHTML = self.getDateFromDataRole(self.availableTd[i]);
+
     if (_.hasClass(self.availableTd[i], 'availableDate')) {
       _.removeClass(self.availableTd[i], 'availableDate');
     }
@@ -250,11 +284,10 @@ App.prototype.listen = function() {
   var dateBox = document.querySelector('.dateBox');
   var page = document.querySelector('.page');
   _.addClass(page, 'downAnimation');
-  _.hide(page);
+  //_.hide(page);
 
   dateBox.onclick = function(event) {
     self.returnInitState();
-    self.renderPrice()
     self.render()
     self.cancel = !1;
     self.oldStartDate = self.startDate;
@@ -265,13 +298,20 @@ App.prototype.listen = function() {
       _.addClass(page, 'upAnimation');
     }, 100);
 
-    self.handle('dateBox');
+    self.handle('dateBoxTouch');
   };
 
   var confirmBtn = document.querySelector('.confirm-btn');
   confirmBtn.onclick = function(event) {
     if (self.endDate === null) {
-      return alert('\u4eb2\uff01\u60a8\u8fd8\u672a\u9009\u62e9\u79bb\u5e97\u65e5\u671f');
+      var errorInfo = document.querySelector('.calendar-err');
+      errorInfo.innerHTML = '\u4eb2\uff01\u60a8\u8fd8\u672a\u9009\u62e9\u79bb\u5e97\u65e5\u671f';
+      _.addClass(errorInfo, 'show');
+      setTimeout(function() {
+        _.removeClass(errorInfo, 'show');
+      }, 1200);
+      return;
+      //return alert('\u4eb2\uff01\u60a8\u8fd8\u672a\u9009\u62e9\u79bb\u5e97\u65e5\u671f');
     }
 
     self.handle('confirm');

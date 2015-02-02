@@ -38,13 +38,14 @@
 	<body>
 		<div class="dateBox">If you see me, please click me.</div>
 
-		<div class="page">
+		<div class="page" style="display: none">
 			<div class="calendar-ctrl">
 				<ul>
 					<li class="cancel-btn">取消<b></b></li>
 					<li class="date-info"></li>
 					<li class="confirm-btn">确定<b></b></li>
 				</ul>
+				<div class="calendar-err"></div>
 			</div>
 			<div class="calendar"></div>
 		</div>
@@ -67,16 +68,19 @@
 				var startDateText = this.startDate.toString();
 				var endDateText = this.endDate.toString();
 				dateBox.innerHTML = '<p>' + startDateText + '(入住)</p><p>' + endDateText + '(离店)</p>';
+
 				setTimeout(function() {
 					_.hide(page);
 				}, 600);
 			};
 
-			var data = {'default': 256, '2015-01-31': 378, '2015-02-24': 745};
+			var data = {'default': 256, '2015-01-31': 378, '2015-02-24': 745, '2015-02-20': -234.2, '2015-02-23': 3.45};
+			var data1 = [123, 234, 345, 456, 567, 678, 789, 890, 901, 012, 123, 234, 345, 456, 567, 678, 789, 890, 901, 123, 234, 345, 456, 567, 678, 789, 890, 901, 123, 234, 345, 456, 567, 678, 789, 890, 901,  456, 567, 678, 789, 890, 901, 012, 123, 234, 345, 456, 567, 678, 789, 890, 901, 123, 234, 345, 456, 567, 678];
 			var mCal = new App();
 
 			mCal.on('confirm', function() {
 				console.log(this.get('startDate'));
+				console.log(this.countTotalPrice());
 				confirmAnimation.call(this);
 			});
 			mCal.on('confirm', function() {
@@ -86,15 +90,17 @@
 				console.log(this.get('endDate').toString());
 				confirmAnimation.call(this);
 		    });
-		    mCal.on('dateBox', function() {
+		    mCal.on('dateBoxTouch', function() {
 		    	//console.log('none');
 		    });
 			mCal.set('startDate', startDate)
 				.set('endDate', endDate)
-				.set('maxDate', 100);
+				.set('maxDate', 160);
 			mCal.set('count', 6).init();
 
+			for (date in data) if (data[date] < 0) data[date] = 0;
 			mCal.renderPrice(data);
+			//mCal.renderPrice1(data1);
 		})();
 		</script>
 	</body>
