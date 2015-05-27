@@ -1,0 +1,164 @@
+
+
+body {
+  font: 300 13px/1.6 'Helvetica Neue', Helvetica, Arial;
+  background: #fff;
+  color: #444;
+}
+a {
+  background: transparent;
+}
+a:focus {
+  outline: thin dotted;
+}
+a:active, a:hover {
+  outline: 0;
+}
+p {
+  font-size: 14px;
+}
+pre {
+  white-space: pre-wrap;
+}
+code, kbd, pre, samp {
+  font-family: monospace, serif;
+  font-size: 1em;
+}
+
+/* 导航栏 */
+.navbar.navbar-default {
+  margin-bottom: 0;
+  border: none;
+  border-radius: 0;
+}
+.navbar.navbar-default .navbar-brand {
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-weight: 900;
+}
+.navbar-logo {
+  max-width: 35px;
+}
+@media only screen and (max-width: 768px) {
+  .navbar-logo {
+    max-width: 20px;
+  }
+}
+.navbar.navbar-default .navbar-nav {
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  font-weight: 400;
+  float: none;
+  margin: 0 auto;
+  display: table;
+  table-layout: fixed;
+  font-size: 1.25em;
+}
+.navbar.navbar-default .navbar-nav>.active>a {
+  background: none;
+  color: #075E73;
+}
+.navbar.navbar-default .navbar-nav>li>a {
+  line-height: normal;
+}
+.navbar.navbar-default .nav>li>a {
+  padding: 25px;
+}
+
+
+/* 首页内容 */
+#wrapper {
+  border-top: 1px solid #DCDCDC;
+  border-bottom: 1px solid #DCDCDC;
+  background: #F0EDE3;
+  min-height: 100%;
+  height: auto !important;
+  margin: 0 auto;
+}
+#wrapper .main {
+  padding: 0 0 50px 0;
+}
+.main .logo img {
+  width: 35%;
+  padding-top: 30px;
+}
+.mbxl {
+  margin-bottom: 35px;
+}
+.main .service {
+  color: #585f69;
+  overflow: hidden;
+  margin-bottom: 10px;
+  padding: 15px 15px 10px;
+}
+.main .service .desc {
+  padding: 0 15px;
+  overflow: hidden;
+}
+.service .desc p {
+  font-size: 20px;
+  font-weight: 300;
+}
+.mbs {
+  margin-bottom: 10px;
+}
+.btn-kore {
+  color: #FFFFFF;
+  background-color: #075E73;
+  border-color: #013743;
+  padding: 14px 54px;
+  font-size: 21px;
+}
+
+.main .box {
+  color: #585f69;
+  overflow: hidden;
+  margin-bottom: 10px;
+}
+.main .box .desc {
+  overflow: hidden;
+}
+.main .box .box-icon {
+  color: #585f69;
+  float: left;
+  padding-top: 25px;
+  font-size: 25px;
+  text-align: center;
+  margin-right: 10px;
+}
+.fa-magic:before {
+  content: "\f0d0";
+}
+.main pre {
+  border: none;
+  font-size: 14px;
+  background: rgba(0,0,0,0.7);
+  color: #ffffff;
+  padding: 30px 30px 30px;
+  line-height: 20px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  min-height: 280px;
+}
+.main pre code {
+  color: inherit;
+  background-color: transparent;
+  border: 0;
+}
+pre code {
+  padding: 0;
+  font-size: inherit;
+  color: inherit;
+  white-space: pre-wrap;
+  background-color: transparent;
+  border-radius: 0;
+}
+
+
+
+.btn-kore:hover, .btn-kore:focus, .btn-kore:active, .btn-kore.active, .open.dropdown-toggle.btn-kore {
+  color: #FFFFFF;
+  background-color: #013743;
+  border-color:  #013743;
+}
+
